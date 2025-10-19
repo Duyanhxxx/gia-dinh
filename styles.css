@@ -427,3 +427,231 @@ html, body {
   .members { grid-template-columns: 1fr; }
   .gallery { grid-template-columns: 1fr; }
 }
+
+/* Nút hành động ở header */
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 12px;
+}
+.btn {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn.primary {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary-600);
+}
+.btn:hover { filter: brightness(0.98); }
+
+/* Lightbox xem ảnh toàn màn hình */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.lightbox.hidden { display: none; }
+.lightbox img {
+  max-width: 90vw;
+  max-height: 80vh;
+  object-fit: contain;
+}
+.lightbox .controls {
+  position: absolute;
+  bottom: 24px;
+  display: flex;
+  gap: 16px;
+}
+.lightbox .controls button {
+  font-size: 28px;
+  background: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.lightbox .close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 28px;
+  background: #fff;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Cho thấy item gallery là tương tác được */
+.gallery .item { cursor: pointer; }
+
+.card .body {
+  padding: 12px;
+}
+.card .title {
+  font-weight: 700;
+  font-size: 16px;
+  margin: 0 0 4px;
+}
+.card .meta {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.family {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--card);
+  margin: 16px 0;
+  overflow: hidden;
+}
+.family-header {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+}
+.family-header .family-cover {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f9eef3;
+}
+.family-header .family-title {
+  margin: 0;
+  font-size: 18px;
+  color: var(--text);
+}
+.members {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 12px;
+}
+.member-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--card);
+}
+.member-card .photo {
+  aspect-ratio: 1 / 1;
+  background: #fff2f7;
+}
+.member-card .info {
+  padding: 10px;
+}
+.member-card .name {
+  margin: 0; font-weight: 600; font-size: 14px;
+}
+.member-card .role {
+  margin: 4px 0 0; color: var(--muted); font-size: 12px;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.gallery .item {
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f9eef3;
+  border: 1px solid var(--border);
+}
+
+.site-footer {
+  margin-top: 32px;
+  padding: 24px 0;
+  text-align: center;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 800px) {
+  .card-grid { grid-template-columns: 1fr; }
+  .family-header { grid-template-columns: 1fr; }
+  .members { grid-template-columns: repeat(2, 1fr); }
+  .gallery { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .members { grid-template-columns: 1fr; }
+  .gallery { grid-template-columns: 1fr; }
+}
+
+/* Hiển thị các gia đình theo dạng lưới 3 cột */
+#familiesList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* Mỗi gia đình là một card lớn với ảnh cover đầy đủ */
+.family {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--card);
+  overflow: hidden;
+}
+
+/* Header không cần dạng lưới, để ảnh full-width */
+.family-header {
+  display: block;
+  padding: 0;
+  border-bottom: none;
+}
+
+/* Ảnh cover phóng to theo tỉ lệ 4:3 */
+.family-header .family-cover {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #f9eef3;
+}
+
+/* Ảnh co giãn đúng khung */
+.family-header .family-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Tiêu đề gia đình hiển thị dưới ảnh */
+.family-title {
+  margin: 10px 12px 12px;
+  font-size: 18px;
+  color: var(--text);
+  text-align: center;
+}
+
+@media (max-width: 800px) {
+  .card-grid { grid-template-columns: 1fr; }
+  /* Ở tablet hiển thị 2 cột */
+  #familiesList { grid-template-columns: repeat(2, 1fr); }
+  .members { grid-template-columns: repeat(2, 1fr); }
+  .gallery { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  /* Ở mobile hiển thị 1 cột */
+  #familiesList { grid-template-columns: 1fr; }
+  .members { grid-template-columns: 1fr; }
+  .gallery { grid-template-columns: 1fr; }
+}

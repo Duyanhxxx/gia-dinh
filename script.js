@@ -1,3 +1,7 @@
+// Thêm trạng thái lightbox và nguồn gallery ở cấp file
+let GALLERY_SOURCES = [];
+let currentIndex = 0;
+
 function createImgOrPlaceholder(src, alt, className = "") {
   const hasSrc = src && typeof src === "string";
   if (hasSrc) {
@@ -74,6 +78,7 @@ function renderFamilies(families) {
 function renderGallery(items) {
   const grid = document.getElementById("galleryGrid");
   grid.innerHTML = "";
+  GALLERY_SOURCES = [];
 
   if (!items || items.length === 0) {
     const placeholder = document.createElement("div");
@@ -83,8 +88,10 @@ function renderGallery(items) {
     return;
   }
 
-  items.forEach(item => {
+  items.forEach((item, idx) => {
     const cfg = typeof item === "string" ? { src: item } : (item || {});
+    GALLERY_SOURCES[idx] = cfg.src;
+
     const it = document.createElement("div");
     it.className = "item";
     if (cfg.ratio) {
@@ -93,17 +100,95 @@ function renderGallery(items) {
 
     const media = createImgOrPlaceholder(cfg.src, "Khoảnh khắc yêu thương");
     if (media.tagName === "IMG") {
-      media.style.objectFit = cfg.fit || "cover"; // hoặc "contain" để không che
-      media.style.objectPosition = cfg.position || "center top"; // đẩy khung lên trên cho rõ mặt
+      media.style.objectFit = cfg.fit || "cover";
+      media.style.objectPosition = cfg.position || "center top";
     }
 
     it.appendChild(media);
+
+    // Mở lightbox khi click
+    it.addEventListener("click", () => openLightbox(idx));
+
     grid.appendChild(it);
   });
+}
+
+// Lightbox helpers
+function openLightbox(index) {
+  currentIndex = index;
+  const overlay = document.getElementById("lightbox");
+  const img = document.getElementById("lightboxImg");
+  img.src = GALLERY_SOURCES[currentIndex];
+  overlay.classList.remove("hidden");
+}
+
+function closeLightbox() {
+  document.getElementById("lightbox").classList.add("hidden");
+}
+
+function nextImage() {
+  currentIndex = (currentIndex + 1) % GALLERY_SOURCES.length;
+  document.getElementById("lightboxImg").src = GALLERY_SOURCES[currentIndex];
+}
+
+function prevImage() {
+  currentIndex = (currentIndex - 1 + GALLERY_SOURCES.length) % GALLERY_SOURCES.length;
+  document.getElementById("lightboxImg").src = GALLERY_SOURCES[currentIndex];
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   renderGrandparents(FAMILY_DATA.grandparents || []);
   renderFamilies(FAMILY_DATA.families || []);
   renderGallery(FAMILY_DATA.gallery || []);
+
+  // Gắn event cho lightbox
+  document.getElementById("lightboxClose")?.addEventListener("click", closeLightbox);
+  document.getElementById("nextBtn")?.addEventListener("click", nextImage);
+  document.getElementById("prevBtn")?.addEventListener("click", prevImage);
+
+  // Chia sẻ
+  document.getElementById("btnShare")?.addEventListener("click", async () => {
+    const shareData = {
+      title: FAMILY_DATA.eventTitle || document.title,
+      text: "Chúc mừng 20/10 ❤️ Cả nhà yêu thương nhau mỗi ngày!",
+      url: window.location.href
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareData.url);
+        alert("Đã sao chép liên kết. Hãy dán để chia sẻ!");
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  });
+
+  // Confetti chúc mừng
+  document.getElementById("btnCelebrate")?.addEventListener("click", () => {
+    if (window.confetti) {
+      const end = Date.now() + 1200;
+      const colors = ["#e91e63", "#ff9ec7", "#ffd1e6", "#d81b60"];
+      (function frame() {
+        confetti({
+          particleCount: 6,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors
+        });
+        confetti({
+          particleCount: 6,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors
+        });
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      })();
+    }
+  });
 });
